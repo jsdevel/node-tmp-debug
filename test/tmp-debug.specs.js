@@ -31,6 +31,10 @@ describe('tmp-debug', function(){
       it('should log a stack trace', function() {
         tmpDebug.logStackTrace();
       });
+
+      it('should be able to log with a prefix', function() {
+        tmpDebug.logStackTrace('foo');
+      });
     });
   });
 });
