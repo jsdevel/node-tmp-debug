@@ -1,7 +1,7 @@
 {
   "name": "tmp-debug",
   "main": "lib/tmp-debug.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Debug node scripts with the tmp directory.",
   "author": "jsdevel",
   "scripts": {
