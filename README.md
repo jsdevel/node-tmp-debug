@@ -14,7 +14,7 @@ publish a module around it.
 npm install -g tmp-debug
 ```
 
-Then you can add this to any file unde `node_modules`:
+Then you can add this to any file under `node_modules`:
 
 ```javascript
 var tmpDebug = require('tmp-debug')('log.txt');
