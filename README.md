@@ -8,13 +8,25 @@ with `node-inspector` very easily.  The daemon also detached io streams, making
 console log/error a non starter.  I ended up writing to a tmp file and decided to
 publish a module around it.
 
-## Example
+## Usage
+
+```
+npm install -g tmp-debug
+```
+
+Then you can add this to any file unde `node_modules`:
 
 ```javascript
 var tmpDebug = require('tmp-debug')('log.txt');
 
 tmpDebug.logStackTrace(); // /tmp/log.txt now contains a stack trace.
 tmpDebug.log('foo'); // /tmp/log.txt now has 'foo' appended.
+```
+
+Once you're logging, you can view them by using `tail` I.E.
+
+```
+tail -f /tmp/log.txt
 ```
 
 ##LICENSE
