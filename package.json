@@ -24,8 +24,9 @@
     "istanbul": "^0.3.14",
     "jshint": "^2.7.0",
     "mocha": "^2.2.5",
-    "should": "^6.0.3",
-    "stack-trace": "0.0.9"
+    "should": "^6.0.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "stack-trace": "0.0.9"
+  }
 }
