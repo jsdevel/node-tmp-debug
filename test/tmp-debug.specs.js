@@ -1,9 +1,17 @@
 'use strict';
 
+var del = require('del');
+var fs = require('fs');
+var path = require('path');
 var should = require('should');
 
 describe('tmp-debug', function(){
   var sut = require('../lib/tmp-debug');
+  var tmpdebugrc = path.resolve(__dirname, '../.tmpdebugrc');
+
+  beforeEach(function(done) {
+    del([tmpdebugrc], done);
+  });
 
   describe('instantiation', function() {
     it('should throw an error if file is null', function() {
@@ -44,6 +52,10 @@ describe('tmp-debug', function(){
         asdfasdf(5, 3, 4);
       });
 
+      it('should handle no arguments', function() {
+        tmpDebug.logArgs();
+      });
+
       it('should stringify different argument types', function() {
         var circular = {};
         circular.circular = circular;
@@ -72,6 +84,60 @@ describe('tmp-debug', function(){
 
       it('should be able to log with a prefix', function() {
         tmpDebug.logStackTrace('foo');
+      });
+    });
+  });
+
+  describe('when .tmpdebugrc is found', function() {
+    function create(obj) {
+      fs.writeFileSync(tmpdebugrc, JSON.stringify(obj), 'utf8');
+    }
+
+    describe('when it is disabled', function() {
+      var tmpDebug;
+
+      beforeEach(function() {
+        create({enabled: false});
+        tmpDebug = sut('tmpDebug-disabled.log');
+      });
+
+      it('should not log anything', function() {
+        tmpDebug.log('asdfasdf');
+        tmpDebug.logStackTrace();
+        tmpDebug.logArgs(arguments);
+      });
+    });
+
+    describe('ignoring files', function() {
+      var tmpDebug;
+
+      beforeEach(function() {
+        create({enabled: true, ignore: {files: ['tmp-debug.specs.js']}});
+        tmpDebug = sut('tmpDebug-files.log');
+      });
+
+      it('should not log anything', function() {
+        tmpDebug.log('asdfasdf');
+        tmpDebug.logStackTrace();
+        tmpDebug.logArgs(arguments);
+      });
+    });
+
+    describe('ignoring functions', function() {
+      var tmpDebug;
+
+      beforeEach(function() {
+        create({enabled: true, ignore: {functions: ['ignored']}});
+        tmpDebug = sut('tmpDebug-functions.log');
+      });
+
+      it('should not log anything', function() {
+        function ignored() {
+          tmpDebug.logStackTrace();
+          tmpDebug.log('asdfasdf');
+          tmpDebug.logArgs(arguments);
+        }
+        ignored();
       });
     });
   });

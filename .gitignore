@@ -28,3 +28,5 @@ npm-debug.log
 
 # NPM Dependencies
 /node_modules/
+
+.tmpdebugrc
