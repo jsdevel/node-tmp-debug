@@ -10,18 +10,18 @@ publish a module around it.
 
 ## Usage
 
-```
-npm install -g tmp-debug
-```
-
-Then you can add this to any file under `node_modules`:
-
 ```javascript
 var tmpDebug = require('tmp-debug')('log.txt');
 
-tmpDebug.logStackTrace(); // /tmp/log.txt now contains a stack trace.
-tmpDebug.log('foo'); // /tmp/log.txt now has 'foo' appended.
+tmpDebug.logStackTrace();
+tmpDebug.log('foo');
+function someFn() {
+  tmpDebug.logArgs(arguments);
+}
+someFn();
 ```
+
+## Viewing the output
 
 Once you're logging, you can view them by using `tail` I.E.
 

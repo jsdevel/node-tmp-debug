@@ -27,6 +27,31 @@ describe('tmp-debug', function(){
       });
     });
 
+    describe('logArgs', function() {
+      it('should log annonymous functions with no args', function() {
+        tmpDebug.logArgs(arguments);
+      });
+
+      it('should log annonymous functions with args', function(done, a, b) {
+        tmpDebug.logArgs(arguments);
+        done();
+      });
+
+      it('should separate args by newlines', function() {
+        function asdfasdf(a, b, c) {
+          tmpDebug.logArgs(arguments);
+        }
+        asdfasdf(5, 3, 4);
+      });
+
+      it('should stringify different argument types', function() {
+        function asdfasdf() {
+          tmpDebug.logArgs(arguments);
+        }
+        asdfasdf({asdf: 5}, [4,3,4,3,2], null, undefined, NaN, 1, 'asdf', new Date());
+      });
+    });
+
     describe('logStackTrace', function() {
       it('should log a stack trace', function() {
         tmpDebug.logStackTrace();
