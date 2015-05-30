@@ -4,6 +4,9 @@
   "version": "0.2.0",
   "description": "Debug node scripts with the tmp directory.",
   "author": "jsdevel",
+  "bin": {
+    "tmp-debug": "./bin/tmp-debug.js"
+  },
   "scripts": {
     "pretest": "jshint lib && jshint --config ./test/.jshintrc test",
     "cover": "istanbul cover _mocha -- ./test/**/*.specs.js && cat ./coverage/lcov.info | coveralls -v && rm -rf coverage",

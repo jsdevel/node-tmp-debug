@@ -8,8 +8,17 @@ with `node-inspector` very easily.  The daemon also detached io streams, making
 console log/error a non starter.  I ended up writing to a tmp file and decided to
 publish a module around it.
 
+## Installing
+
+It's recommended to install `tmp-debug` globally:
+
+```bash
+npm install -g tmp-debug
+```
+
 ## Usage
 
+### Programatically
 ```javascript
 var tmpDebug = require('tmp-debug')('log.txt');
 
@@ -20,6 +29,13 @@ function someFn() {
 }
 someFn();
 ```
+
+### Instrumenting
+
+`tmp-debug ./some/directory`
+
+All javascript files found in the directory will be instrumented with
+`tmpDebug.logArgs(arguments);` in every function found therein.
 
 ## Viewing the output
 
