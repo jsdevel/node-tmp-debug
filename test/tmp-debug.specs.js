@@ -13,6 +13,10 @@ describe('tmp-debug', function(){
     del([tmpdebugrc], done);
   });
 
+  after(function(done) {
+    del([tmpdebugrc], done);
+  });
+
   describe('instantiation', function() {
     it('should throw an error if file is null', function() {
       should(function() {
@@ -93,6 +97,22 @@ describe('tmp-debug', function(){
       fs.writeFileSync(tmpdebugrc, JSON.stringify(obj), 'utf8');
     }
 
+    describe('when it is enabled', function() {
+      var tmpDebug;
+
+      beforeEach(function() {
+        create({enabled: true});
+        tmpDebug = sut('tmpDebug-enabled.log');
+      });
+
+      it('should log', function() {
+        tmpDebug.log('asdfasdf');
+        tmpDebug.logStackTrace();
+        tmpDebug.logArgs(arguments);
+      });
+    });
+
+
     describe('when it is disabled', function() {
       var tmpDebug;
 
@@ -112,7 +132,12 @@ describe('tmp-debug', function(){
       var tmpDebug;
 
       beforeEach(function() {
-        create({enabled: true, ignore: {files: ['tmp-debug.specs.js']}});
+        create({
+          enabled: true,
+          filters: [
+            {file: 'tmp-debug.specs.js'}
+          ]
+        });
         tmpDebug = sut('tmpDebug-files.log');
       });
 
@@ -127,7 +152,14 @@ describe('tmp-debug', function(){
       var tmpDebug;
 
       beforeEach(function() {
-        create({enabled: true, ignore: {functions: ['ignored']}});
+        create({
+          enabled: true,
+          filters: [
+            {functionName: 'null'},
+            {file: 'tmp-debug.specs.js', functionName: 'ignored'},
+            {file: 'tmp-debug.specs.js', functionName: 'null'}
+          ]
+        });
         tmpDebug = sut('tmpDebug-functions.log');
       });
 

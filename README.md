@@ -37,13 +37,33 @@ someFn();
 All javascript files found in the directory will be instrumented with
 `tmpDebug.logArgs(arguments);` in every function found therein.
 
-## Viewing the output
+## Viewing
 
 Once you're logging, you can view them by using `tail` I.E.
 
 ```
 tail -f /tmp/log.txt
 ```
+
+## Filtering
+
+The output can be filtered by placing a `.tmpdebugrc` file somewhere in or above
+`node_modules/tmp-debug`.
+
+Sample `.tmpdebugrc` file:
+```json
+{
+  "enabled": true,
+  "filters": [
+    {"file": "some-file.js", "functionName": "someFunctionName"}
+  ]
+}
+```
+
+### Semantics
+
+* A `file` filter filters files that end with it's value.
+* A `functionName` filter filters functions within files matched by the `file` filter.
 
 ##LICENSE
 ``````
