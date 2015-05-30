@@ -57,8 +57,12 @@ fs.stat(dir, function(err, stats) {
           '',
           '',
           '//Added by tmp-debug.js',
+          'var __tmpDebugModule;',
           'function __tmpDebug() {',
-          '  return require(\'tmp-debug\')(\'' + logArg + '\');',
+          '  if (!__tmpDebugModule) {',
+          '    __tmpDebugModule = require(\'tmp-debug\')(\'' + logArg + '\');',
+          '  }',
+          '  return __tmpDebugModule;',
           '}',
           ''
         ].join('\n');
