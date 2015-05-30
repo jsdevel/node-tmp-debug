@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 
+var args = process.argv.slice(2);
+var logArg = args.length > 1 ? args[1] : 'tmp-debug.log';
+var dirArg = args[0];
 var cwd = process.cwd();
-var dirArg = process.argv.slice(2)[0];
 var exit = process.exit;
 var fs = require('fs');
 var path = require('path');
 var resolve = path.resolve;
 var dir = resolve(cwd, dirArg || '.');
+var logFileName;
 var exitCodes = {
   COULD_NOT_STAT_DIR: 1,
   NON_DIR_ARG: 2,
@@ -47,7 +50,10 @@ fs.stat(dir, function(err, stats) {
 
     files.forEach(function(file) {
       var contents = fs.readFileSync(file, {encoding: 'utf8'})
-          .replace(/(function(?:(?!\{)[\s\S])+\{)(?!tmpDebug)/gm, '$1tmpDebug.logArgs(arguments);\n');
+          .replace(/(function(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm, '$1__tmpDebug().logArgs(arguments);\n');
+
+      contents += '\n\n//Added by tmp-debug.js\nfunction __tmpDebug() {\n  return require(\'tmp-debug\')(\'' + logArg + '\');\n}\n';
+
       fs.writeFileSync(file, contents, {encoding: 'utf8'});
     });
   });
