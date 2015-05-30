@@ -45,10 +45,23 @@ describe('tmp-debug', function(){
       });
 
       it('should stringify different argument types', function() {
+        var circular = {};
+        circular.circular = circular;
+
         function asdfasdf() {
           tmpDebug.logArgs(arguments);
         }
-        asdfasdf({asdf: 5}, [4,3,4,3,2], null, undefined, NaN, 1, 'asdf', new Date());
+        asdfasdf(
+          {asdf: 5},
+          [4,3,4,3,2],
+          null,
+          undefined,
+          NaN,
+          1,
+          'asdf',
+          new Date(),
+          circular
+        );
       });
     });
 
