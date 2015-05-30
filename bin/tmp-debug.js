@@ -50,9 +50,19 @@ fs.stat(dir, function(err, stats) {
 
     files.forEach(function(file) {
       var contents = fs.readFileSync(file, {encoding: 'utf8'})
-          .replace(/(function(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm, '$1__tmpDebug().logArgs(arguments);\n');
+          .replace(/(function(?! __tmpDebug)(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm, '$1__tmpDebug().logArgs(arguments);\n');
 
-      contents += '\n\n//Added by tmp-debug.js\nfunction __tmpDebug() {\n  return require(\'tmp-debug\')(\'' + logArg + '\');\n}\n';
+      if (contents.indexOf('function __tmpDebug') === -1) {
+        contents += [
+          '',
+          '',
+          '//Added by tmp-debug.js',
+          'function __tmpDebug() {',
+          '  return require(\'tmp-debug\')(\'' + logArg + '\');',
+          '}',
+          ''
+        ].join('\n');
+      }
 
       fs.writeFileSync(file, contents, {encoding: 'utf8'});
     });
