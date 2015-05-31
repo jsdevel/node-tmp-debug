@@ -8,6 +8,8 @@ with `node-inspector` very easily.  The daemon also detached io streams, making
 console log/error a non starter.  I ended up writing to a tmp file and decided to
 publish a module around it.
 
+<img src="http://jsdevel.github.io/node-tmp-debug/images/tmp-debug.png">
+
 ## Installing
 
 It's recommended to install `tmp-debug` globally:
@@ -39,11 +41,10 @@ All javascript files found in the directory will be instrumented with
 
 ## Viewing
 
-Once you're logging, you can view them by using `tail` I.E.
+Once you're logging, you can view the file output in the following ways:
 
-```
-tail -f /tmp/log.txt
-```
+* `tail -f /tmp/log.txt`
+* `less -R /tmp/log.txt`
 
 ## Filtering
 
