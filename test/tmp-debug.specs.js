@@ -97,6 +97,19 @@ describe('tmp-debug', function(){
       fs.writeFileSync(tmpdebugrc, JSON.stringify(obj), 'utf8');
     }
 
+    describe('when outputDepth is set', function() {
+      var tmpDebug;
+
+      beforeEach(function() {
+        create({enabled: true, outputDepth: 1});
+        tmpDebug = sut('tmpDebug-outputDepth.log');
+      });
+
+      it('should be limit output', function() {
+        tmpDebug.logArgs([{asdf:{asdf:{asdf:5}}}]);
+      });
+    });
+
     describe('when it is enabled', function() {
       var tmpDebug;
 
@@ -111,7 +124,6 @@ describe('tmp-debug', function(){
         tmpDebug.logArgs(arguments);
       });
     });
-
 
     describe('when it is disabled', function() {
       var tmpDebug;

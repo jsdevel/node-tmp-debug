@@ -23,6 +23,7 @@ npm install -g tmp-debug
 ## Usage
 
 ### Programatically
+
 ```javascript
 var tmpDebug = require('tmp-debug')('log.txt');
 
@@ -48,12 +49,12 @@ Once you're logging, you can view the file output in the following ways:
 * `tail -f /tmp/log.txt`
 * `less -R /tmp/log.txt`
 
-## Filtering
+## Configuring
 
-The output can be filtered by placing a `.tmpdebugrc` file somewhere in or above
-`node_modules/tmp-debug`.
+Place `.tmpdebugrc` on your path.
 
-Sample `.tmpdebugrc` file:
+### Example Config File
+
 ```json
 {
   "enabled": true,
@@ -64,16 +65,23 @@ Sample `.tmpdebugrc` file:
       "line": 50,
       "column": 30
     }
-  ]
+  ],
+  "outputDepth": 3
 }
 ```
 
-### Semantics
+#### filters
+
+An array of filter objects that control what gets logged.
 
 * `file` filters files that end with it's value.
 * `functionName` filters functions that end with it's value.
 * `line` filters functions that occor on this line.
 * `column` filters functions that occur on this column.
+
+#### outputDepth
+
+An integer controlling how many levels deep inspected objects will be logged.
 
 ##LICENSE
 ``````
