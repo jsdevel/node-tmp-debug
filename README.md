@@ -55,15 +55,22 @@ Sample `.tmpdebugrc` file:
 {
   "enabled": true,
   "filters": [
-    {"file": "some-file.js", "functionName": "someFunctionName"}
+    {
+      "file": "optional/path/some-file.js",
+      "functionName": "someFunctionName",
+      "line": 50,
+      "column": 30
+    }
   ]
 }
 ```
 
 ### Semantics
 
-* A `file` filter filters files that end with it's value.
-* A `functionName` filter filters functions within files matched by the `file` filter.
+* `file` filters files that end with it's value.
+* `functionName` filters functions that end with it's value.
+* `line` filters functions that occor on this line.
+* `column` filters functions that occur on this column.
 
 ##LICENSE
 ``````
