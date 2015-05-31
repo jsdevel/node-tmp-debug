@@ -1,0 +1,25 @@
+# tmp-debug
+
+Instrument files with tmp-debug.
+
+## Usage
+
+tmp-debug [OPTIONS] dirs...
+
+## OPTIONS
+
+  * -d, --dry-run Print matched files and exit without instrumenting.
+
+  * -h, --help    Show this menu.
+
+  * --log-file    The name of the log file to use.
+
+## Examples
+
+  * Logging to /tmp/log.txt
+
+    `tmp-debug --log-file log.txt .`
+
+  * Multiple directories
+
+    `tmp-debug lib scripts foo`

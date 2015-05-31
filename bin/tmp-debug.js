@@ -1,74 +1,115 @@
 #!/usr/bin/env node
 
-var args = process.argv.slice(2);
-var logArg = args.length > 1 ? args[1] : 'tmp-debug.log';
-var dirArg = args[0];
+var args = require('minimist')(process.argv.slice(2), {
+  boolean: ['d', 'dry-run', 'h', 'help'],
+  default: {
+    'log-file': 'tmp-debug.log'
+  },
+  string: ['i', 'ignore']
+});
+var chalk = require('chalk');
 var cwd = process.cwd();
 var exit = process.exit;
 var fs = require('fs');
 var path = require('path');
 var resolve = path.resolve;
-var dir = resolve(cwd, dirArg || '.');
-var logFileName;
 var exitCodes = {
-  COULD_NOT_STAT_DIR: 1,
-  NON_DIR_ARG: 2,
-  COULD_NOT_LIST_FILES: 3,
+  NO_JS_FILES_FOUND: 5,
+  NO_DIR_ARG: 2,
+  UNKOWN: 4,
 };
 
-fs.stat(dir, function(err, stats) {
-  if (err || !stats) {
-    console.error('Could not stat ' + dir);
-    console.error(err || stats);
-    exit(exitCodes.COULD_NOT_STAT_DIR);
+var dirs = args._.map(toAbsolute(cwd));
+var logFile = args['log-file'];
+
+var directoriesToProcess = [];
+var files = [];
+
+if (args.h || args.help) {
+  help(0);
+}
+
+if (!dirs.length) {
+  error('No directory was specified!');
+  help(exitCodes.NO_DIR_ARG);
+}
+
+dirs.forEach(handleArgDir);
+
+if (!files || !files.length) {
+  error('No .js files found!');
+  exit(exitCodes.NO_JS_FILES_FOUND);
+}
+
+if (args.d || args['dry-run']) {
+  console.log(files);
+  console.log(files.length + ' file[s] were found.');
+  console.log('Dry run detected.');
+  exit(0);
+}
+
+files.forEach(instrument);
+
+function error(msg) {
+  console.error('\n' + chalk.red(msg));
+}
+
+function handleArgDir(dir) {
+  var dirStat = fs.statSync(dir);
+
+  if (!dirStat.isDirectory()) {
+    error(dir + ' was not a directory!\n\nYou must provide directories.');
+    exit(1);
   }
 
-  if (!stats.isDirectory() && dirArg) {
-    console.error('This is not a directory: ' + dirArg);
-    exit(exitCodes.NON_DIR_ARG);
+  directoriesToProcess.push(fs.readdirSync(dir).map(toAbsolute(dir)));
+
+  while (directoriesToProcess.length) {
+    handleDirectory(directoriesToProcess.shift());
   }
+}
 
-  fs.readdir(dir, function(err, entries) {
-    if (err) {
-      console.error('Could not list files in ' + dir);
-      console.error(err);
-      exit(exitCodes.COULD_NOT_LIST_FILES);
+function handleDirectory(directory) {
+  directory.forEach(function(node) {
+    var stat = fs.statSync(node);
+    if (stat.isFile() && /\.js$/.test(node)) {
+      files.push(node);
     }
-
-    entries = entries.map(function(entry) {
-      return resolve(dir, entry);
-    });
-
-    var files = entries.filter(function(entry) {
-      return fs.statSync(entry).isFile() && /\.js$/i.test(entry);
-    });
-
-    if (!files || !files.length) {
-      console.warn('No .js files found in ' + dir);
-      exit();
-    }
-
-    files.forEach(function(file) {
-      var contents = fs.readFileSync(file, {encoding: 'utf8'})
-          .replace(/(function(?! __tmpDebug)(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm, '$1__tmpDebug().logArgs(arguments);\n');
-
-      if (contents.indexOf('function __tmpDebug') === -1) {
-        contents += [
-          '',
-          '',
-          '//Added by tmp-debug.js',
-          'var __tmpDebugModule;',
-          'function __tmpDebug() {',
-          '  if (!__tmpDebugModule) {',
-          '    __tmpDebugModule = require(\'tmp-debug\')(\'' + logArg + '\');',
-          '  }',
-          '  return __tmpDebugModule;',
-          '}',
-          ''
-        ].join('\n');
-      }
-
-      fs.writeFileSync(file, contents, {encoding: 'utf8'});
-    });
   });
-});
+}
+
+function help(code) {
+  require('./help')();
+  exit(code);
+}
+
+function instrument(file) {
+  var contents = fs.readFileSync(file, {encoding: 'utf8'});
+
+  contents = contents
+    .replace(/(function(?! __tmpDebug)(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm, '$1__tmpDebug().logArgs(arguments);\n');
+
+  if (contents.indexOf('function __tmpDebug') === -1) {
+    contents += [
+      '',
+      '',
+      '//Added by tmp-debug.js',
+      'var __tmpDebugModule;',
+      'function __tmpDebug() {',
+      '  if (!__tmpDebugModule) {',
+      '    __tmpDebugModule = require(\'tmp-debug\')(\'' + logFile + '\');',
+      '  }',
+      '  return __tmpDebugModule;',
+      '}',
+      ''
+    ].join('\n');
+  }
+
+  fs.writeFileSync(file, contents, {encoding: 'utf8'});
+}
+
+function toAbsolute(base) {
+  return function(dir) {
+    return resolve(base, dir);
+  };
+}
