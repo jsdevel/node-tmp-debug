@@ -1,5 +1,5 @@
 # tmp-debug [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url]
-> Debug node scripts with the tmp directory.
+> Debug node applications with tmp files.
 
 ## Motivation
 
@@ -7,6 +7,8 @@ While trying to understand how a daemon application worked, I wasn't able to deb
 with `node-inspector` very easily.  The daemon also detached io streams, making
 console log/error a non starter.  I ended up writing to a tmp file and decided to
 publish a module around it.
+
+Here's some sample output that was written to a file:
 
 <img src="http://jsdevel.github.io/node-tmp-debug/images/tmp-debug.png">
 
