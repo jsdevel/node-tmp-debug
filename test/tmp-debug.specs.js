@@ -17,6 +17,18 @@ describe('tmp-debug', function(){
     del([tmpdebugrc], done);
   });
 
+  function getContents(file) {
+    return fs.readFileSync('/tmp/' + file, 'utf8');
+  }
+
+  function assertLogFileHas(file, content, cb) {
+    setTimeout(function() {
+      var contents = getContents(file);
+      getContents(file).indexOf(content).should.not.equal(-1);
+      cb();
+    }, 500);
+  }
+
   describe('instantiation', function() {
     it('should throw an error if file is null', function() {
       should(function() {
@@ -33,31 +45,35 @@ describe('tmp-debug', function(){
       tmpDebug = sut(FILE);
     });
 
+    after(function(done) {
+      del(['/tmp/' + FILE], {force: true}, done);
+    });
+
     describe('log', function() {
-      it('should log', function() {
-        tmpDebug.log('asdfasdf');
+      it('should log', function(done) {
+        var expectedContent = 'asdfasdf';
+        tmpDebug.log(expectedContent);
+        assertLogFileHas(FILE, expectedContent, done);
       });
     });
 
     describe('logArgs', function() {
-      it('should log annonymous functions with no args', function() {
+      it('should log annonymous functions', function(done) {
         tmpDebug.logArgs(arguments);
+        assertLogFileHas(FILE, 'anonymous(function (err))', done);
       });
 
-      it('should log annonymous functions with args', function(done, a, b) {
-        tmpDebug.logArgs(arguments);
-        done();
-      });
-
-      it('should separate args by newlines', function() {
+      it('should separate args by newlines', function(done) {
         function asdfasdf(a, b, c) {
           tmpDebug.logArgs(arguments);
+          assertLogFileHas(FILE, 'asdfasdf(5,\n         3,\n         4)', done);
         }
         asdfasdf(5, 3, 4);
       });
 
-      it('should handle no arguments', function() {
+      it('should handle no arguments', function(done) {
         tmpDebug.logArgs();
+        assertLogFileHas(FILE, 'anonymous()', done);
       });
 
       it('should stringify different argument types', function() {
