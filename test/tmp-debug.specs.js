@@ -79,7 +79,7 @@ describe('tmp-debug', function(){
       it('should log paramNames when available', function(done) {
         function testing(a, b, c) {
           tmpDebug.logArgs(arguments, ['a', 'b', 'c']);
-          assertLogFileHas(FILE, 'testing(a => 1,\n        b => 2,\n        c => 3)', done);
+          assertLogFileHas(FILE, 'testing(a => 1,\n        b => 2,\n        c => undefined)', done);
         }
 
         testing(1, 2);
