@@ -24,7 +24,7 @@ describe('tmp-debug', function(){
   function assertLogFileHas(file, content, cb) {
     setTimeout(function() {
       var contents = getContents(file);
-      getContents(file).indexOf(content).should.not.equal(-1);
+      contents.indexOf(content).should.not.equal(-1);
       cb();
     }, 500);
   }
@@ -74,6 +74,15 @@ describe('tmp-debug', function(){
       it('should handle no arguments', function(done) {
         tmpDebug.logArgs();
         assertLogFileHas(FILE, 'anonymous()', done);
+      });
+
+      it('should log paramNames when available', function(done) {
+        function testing(a, b, c) {
+          tmpDebug.logArgs(arguments, ['a', 'b', 'c']);
+          assertLogFileHas(FILE, 'testing(a => 1,\n        b => 2,\n        c => 3)', done);
+        }
+
+        testing(1, 2);
       });
 
       it('should stringify different argument types', function() {

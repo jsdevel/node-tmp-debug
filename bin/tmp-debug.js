@@ -11,6 +11,7 @@ var chalk = require('chalk');
 var cwd = process.cwd();
 var exit = process.exit;
 var fs = require('fs');
+var getFnParams = require('get-fn-params');
 var path = require('path');
 var resolve = path.resolve;
 var exitCodes = {
@@ -87,7 +88,14 @@ function instrument(file) {
   var contents = fs.readFileSync(file, {encoding: 'utf8'});
 
   contents = contents
-    .replace(/(function(?! __tmpDebug)(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm, '$1__tmpDebug().logArgs(arguments);\n');
+    .replace(
+        /(function(?! __tmpDebug)(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm,
+        function (match, fn) {
+          return fn +
+                 '__tmpDebug().logArgs(arguments, ' +
+                 JSON.stringify(getFnParams(fn)) +
+                 ');';
+        });
 
   if (contents.indexOf('function __tmpDebug') === -1) {
     contents += [
