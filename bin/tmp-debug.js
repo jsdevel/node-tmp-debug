@@ -7,7 +7,7 @@ var args = require('minimist')(process.argv.slice(2), {
   },
   string: ['i', 'ignore']
 });
-var chalk = require('ansi-styles');
+var chalk = require('chalk');
 var cwd = process.cwd();
 var exit = process.exit;
 var fs = require('fs');
