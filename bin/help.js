@@ -1,6 +1,6 @@
 'use strict';
 
-var chalk = new require('chalk').constructor({enabled: true});
+var chalk = new (require('chalk').constructor)({enabled: true});
 var fs = require('fs');
 var path = require('path');
 var resolve = path.resolve;
