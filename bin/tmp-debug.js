@@ -89,7 +89,7 @@ function instrument(file) {
 
   contents = contents
     .replace(
-        /(function(?! __tmpDebug)(?:(?!\{)[\s\S])+\{)(?!__tmpDebug)/gm,
+        /(function\s*([a-z][a-z0-9$_]*)?\s*\([^)]*\)\s*\{)(?!__tmpDebug)/gim,
         function (match, fn) {
           return fn +
                  '__tmpDebug().logArgs(arguments, ' +
