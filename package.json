@@ -32,7 +32,7 @@
     "sinon": "^1.14.1"
   },
   "dependencies": {
-    "chalk": "^1.0.0",
+    "ansi-styles": "^2.0.1",
     "ends-with": "^0.2.0",
     "findup-sync": "^0.2.1",
     "get-fn-params": "^0.1.1",

@@ -1,6 +1,6 @@
 'use strict';
 
-var chalk = require('chalk');
+var chalk = require('ansi-styles');
 var fs = require('fs');
 var path = require('path');
 var resolve = path.resolve;
